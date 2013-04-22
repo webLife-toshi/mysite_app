@@ -1,13 +1,14 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
-
+gem 'bootstrap-sass', '2.1'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem 'sqlite3'
-
-
+group :development, :test do
+  gem 'sqlite3'
+# rspecを動かすためには、group :development, testの中に定義する
+  gem 'rspec-rails', '2.11.0'
+end
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -21,7 +22,10 @@ group :assets do
 end
 
 gem 'jquery-rails'
-
+# rspec-railsを動作させるのに必要
+group :test do
+  gem 'capybara', '1.1.2'
+end
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
