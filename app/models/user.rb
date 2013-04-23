@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
 #つまり、emailアドレスを全て小文字に変換した後で保存するような処理を追加する、
 #ということ
 before_save { email.downcase! }
+#save前にcreate_remember_tokenを作成する
+before_save :create_remember_token
 #before_save { |user| user.email = email.downcase }
 
 #presenceをtrueにすることで、記入無しを防げる
@@ -33,4 +35,11 @@ before_save { email.downcase! }
   validates_confirmation_of :password
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
+
+  private
+   def create_remember_token
+#SecureRandom.urlsafe_base64 returns a random string of length 16 composed of
+# the characters A–Z, a–z, 0–9, “-”, and “_” (for a total of 64 possibilities)
+	self.remember_token = SecureRandom.urlsafe_base64
+   end
 end

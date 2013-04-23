@@ -1,14 +1,17 @@
 MysiteApp::Application.routes.draw do
 #  get "users/new"
   resources :users
- 
+  resources :sessions, only: [:new, :create, :destroy]
+
   root to: 'static_pages#home'
 #  get "static_pages/home"
   match '/' => 'static_pages#home', :as => :root
   match '/help' => 'static_pages#help', :as => :help
   match '/about' => 'static_pages#about', :as => :about
   match '/contact' => 'static_pages#contact', :as => :contact
-  match '/signup_path' => 'users#new', :as => :signup
+  match '/signup' => 'users#new', :as => :signup
+  match '/signin' => 'sessions#new', :as => :signin
+  match '/signout' => 'sessions#destroy', :as => :signout, via: :delete
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
