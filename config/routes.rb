@@ -1,6 +1,8 @@
 MysiteApp::Application.routes.draw do
 #  get "users/new"
-
+  resources :users
+ 
+  root to: 'static_pages#home'
 #  get "static_pages/home"
   match '/' => 'static_pages#home', :as => :root
   match '/help' => 'static_pages#help', :as => :help
