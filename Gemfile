@@ -4,6 +4,10 @@ gem 'rails', '3.2.13'
 gem 'bootstrap-sass', '2.1'
 #これはhas_secure_passwordを利用するためのもの
 gem 'bcrypt-ruby', '3.0.1'
+gem 'faker', '1.0.1'
+#ページングに使うもの
+gem 'will_paginate', '3.0.3'
+gem 'bootstrap-will_paginate', '0.0.6'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 group :development, :test do
