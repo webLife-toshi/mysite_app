@@ -1,11 +1,12 @@
 class UsersController < ApplicationController
-  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
+#  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_filter :correct_user,   only: [:edit, :update]
   before_filter :admin_user,     only: :destroy
 
   def show
 #params[:id]でユーザのid返す、User.find(1)のような感じで、値を返す
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def new
@@ -65,14 +66,15 @@ class UsersController < ApplicationController
 
   private
 
-    def signed_in_user
 #unless signed_in?でsigninされてない場合、
 #store_locationを実行してリダイレクトする
-	unless signed_in?
-	store_location
-	redirect_to signin_url, notice: "Please sign in"
-	end
-    end
+
+#    def signed_in_user
+#	unless signed_in?
+#	store_location
+#	redirect_to signin_url, notice: "Please sign in"
+#	end
+#    end
 #unless current_user?(@user)がない場合、トップページにいく
     def correct_user
 	@user = User.find(params[:id])

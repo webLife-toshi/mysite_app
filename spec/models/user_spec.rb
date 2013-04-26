@@ -28,7 +28,9 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
-  it { should respond_to(:authenticate) }
+#  it { should respond_to(:authenticate) }
+  it { should respond_to(:microposts) }
+  it { should respond_to(:feed) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -95,8 +97,8 @@ describe User do
 	@user.email = mixed_case_email
 	@user.save
 	@user.reload.email.should == mixed_case_email.downcase
-    end
-  end
+     end #"should be saved as all lower-case"
+  end #"email address with mixed case"
 
   describe "when password is not present" do
      before { @user.password = @user.password_confirmation = " " }
@@ -125,12 +127,46 @@ describe User do
         let(:user_for_invalid_password) { found_user.authenticate("invalid")}
         it { should_not == user_for_invalid_password }
         specify { user_for_invalid_password.should be_false }
-     end
-  end
+     end #"with invalid password"
+  end #"return value of authenticate method"
 
   describe "remember token" do
     before { @user.save }
 #it { @user.remember_token.should_not be_blank }と同じ意味
     its(:remember_token) { should_not be_blank }
-  end
+  end #"remember token"
+
+  describe "micropost associations" do
+
+     before { @user.save }
+     let!(:older_micropost) do
+       FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+     end #let!(:older_micropost)
+     let!(:newer_micropost) do
+       FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+     end #let!(:newer_micropost)
+
+     it "should destroy associated mieroposts" do
+       microposts = @user.microposts.dup
+       @user.destroy
+       microposts.should_not be_empty
+       microposts.each do |micropost|
+	Micropost.find_by_id(micropost.id).should be_nil
+       end #microposts.each do |micropost|
+     end #"should destroy associated mieroposts"
+
+     it "should have the right microposts in the right order" do
+       @user.microposts.should == [newer_micropost, older_micropost]
+     end #"should have the right microposts in the right order"
+
+     describe "status" do
+       let(:unfollowed_post)do
+	FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
+       end #"status"
+
+       its(:feed) { should include(newer_micropost) }
+       its(:feed) { should include(older_micropost) }
+       its(:feed) { should_not include(unfollowed_post) }
+     end #"status"
+  end #"micropost associations"
 end

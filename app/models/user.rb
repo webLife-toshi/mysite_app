@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 #attr_accessibleでハッシュでの引き渡しを許可させる
   attr_accessible :email, :name, :password, :password_confirmation
   has_secure_password
+  has_many :microposts, dependent: :destroy
 #  Userクラスのインスタンスをsaveする前に、email.downcase、
 #つまり、emailアドレスを全て小文字に変換した後で保存するような処理を追加する、
 #ということ
@@ -35,6 +36,10 @@ before_save :create_remember_token
   validates_confirmation_of :password
   validates :password, length: { minimum: 6 }
   validates :password_confirmation, presence: true
+
+  def feed
+    Micropost.where("user_id = ?",id)
+  end
 
   private
    def create_remember_token
